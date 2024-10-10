@@ -537,15 +537,15 @@ int Clone_Snapshot::init_redo_copy(Snapshot_State new_state,
     binlog_error = synchronize_binlog_gtid(cbk);
   }
 
+#else
+  int binlog_error = 0;
+#endif
+
   /* Save all dynamic metadata to DD buffer table and let all future operations
   to save data immediately after generation. This makes clone recovery
   independent of dynamic metadata stored in redo log and avoids generating
   redo log during recovery. */
   dict_persist_t::Enable_immediate dyn_metadata_guard(dict_persist);
-
-#else
-  int binlog_error = 0;
-#endif
 
   /* Use it only for local clone. For remote clone, donor session is different
   from the sessions created within mtr test case. */
